@@ -30,7 +30,7 @@ class ShiftRegisterMemExample[T <: Data](gen: T, n1: Int, n2: Int) extends Modul
   val cnt1 = RegInit(0.U(logn1.W))
   val cnt2 = RegInit(0.U(logn2.W))
 
-  // add here parameter sram = true, should forward this parameter to SyncReadMem inside ShiftRegisterMem so that annotation knows that black box for sram should be generated
+  // add here parameter sram = false, should forward this parameter to SyncReadMem inside ShiftRegisterMem so that annotation knows that black box for sram should not be generated
   val shiftMem1 = ShiftRegisterMem(io.in, n1, io.en1, name = "simple_shift_register1")
   // add here parameter sram = true, should forward this parameter to SyncReadMem inside ShiftRegisterMem so that annotation knows that black box for sram should be generated
   val shiftMem2 = ShiftRegisterMem(io.in, n2, io.en2, name = "simple_shift_register2")
@@ -57,7 +57,7 @@ class ShiftRegisterMemExample[T <: Data](gen: T, n1: Int, n2: Int) extends Modul
   io.valid_out2 := initialInDone2 && io.en2
 }
 
-// By running this app, repl-seq-mem annotates both SyncReadMem memories instantiated inside ShiftRegisterMem but our intention is to map only larger one.
+// By running this app, repl-seq-mem annotates both SyncReadMem memories instantiated inside ShiftRegisterMem but our intention is to map only the larger one.
 object ShiftRegisterMemDifferentSizeApp extends App
 {
   val n1 = 128
@@ -88,5 +88,3 @@ object ShiftRegisterMemSameSizeApp extends App
   // generate black boxes for memories
   (new ChiselStage).execute(arguments, Seq(ChiselGeneratorAnnotation(() => new ShiftRegisterMemExample(dataType, n1, n2))))
 }
-
-
